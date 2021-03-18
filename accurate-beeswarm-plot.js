@@ -1,12 +1,21 @@
 class AccurateBeeswarm {
-    constructor(items, radius, xFun, randomTieBreak) {
+    constructor(items, radius, xFun) {
         this.items = [...items].sort((a,b) => xFun(a) - xFun(b));
         this.diameter = radius * 2;
         this.diameterSq = this.diameter * this.diameter;
         this.xFun = xFun;
-        this.tieBreakFn = randomTieBreak ?
-                this.sfc32(0x9E3779B9, 0x243F6A88, 0xB7E15162, 1) :
-                x => x;
+        this.tieBreakFn = x => x;
+        this._oneSided = false;
+    }
+
+    withTiesBrokenRandomly() {
+        this.tieBreakFn = this.sfc32(0x9E3779B9, 0x243F6A88, 0xB7E15162, 1);
+        return this;
+    }
+
+    oneSided() {
+        this._oneSided = true;
+        return this;
     }
 
     // Random number generator
@@ -38,13 +47,16 @@ class AccurateBeeswarm {
                 if (other.placed) continue;
                 let xDiff = item.x - other.x;
                 let yDiff = Math.sqrt(this.diameterSq - xDiff * xDiff);
-                let highY = item.y + yDiff;
-                let lowY = item.y - yDiff;
-                other.minPositiveY = Math.max(other.minPositiveY, highY);
-                other.maxNegativeY = Math.min(other.maxNegativeY, lowY);
-                other.score = Math.min(other.minPositiveY, -other.maxNegativeY);
-                other.bestPosition = other.score == other.minPositiveY ?
-                        other.minPositiveY : other.maxNegativeY;
+                other.minPositiveY = Math.max(other.minPositiveY, item.y + yDiff);
+                other.score = other.minPositiveY;
+                other.bestPosition = other.minPositiveY;
+                if (!this._oneSided) {
+                    other.maxNegativeY = Math.min(other.maxNegativeY, item.y - yDiff);
+                    if (-other.maxNegativeY < other.score) {
+                        other.score = -other.maxNegativeY;
+                        other.bestPosition = other.maxNegativeY;
+                    }
+                }
                 pq.reprioritise(other);
             }
         }
@@ -119,6 +131,7 @@ class AccurateBeeswarmPriorityQueue {
         this._siftDown();
         return poppedValue;
     }
+    // Caution: this only works if new priority is less than or equal to old one.
     reprioritise(item) {
         this._siftDown(item.heapPos);
     }
