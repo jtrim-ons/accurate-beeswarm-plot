@@ -16,16 +16,16 @@ with similar goals.
 It is assumed that the data (x) axis of the plot will be horizontal.  For
 a vertical beeswarm, simply swap x and y axes when plotting.
 
-If `data` is an array of items, `fn` is a function that takes an element
-of data and returns its x position, calling
+To calculate a beeswarm arrangement, you need an array of items `data`
+and a function `fn` that takes an element of data and returns its x position.
+The following call returns an array of objects;  each object contains fields
+`datum` (an element of `data`), `x` (the x position), and `y` (the y position).
+
 
 ```
 let result = new AccurateBeeswarm(data, radius, fn)
         .calculateYPositions();
 ```
-
-returns an array of objects.  Each object contains `datum` (an element of
-`data`), `x` (the x position), and `y` (the y position).
 
 ## Additional Options
 
