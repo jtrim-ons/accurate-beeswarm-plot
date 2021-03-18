@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Beeswarm plot</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,bold" rel="stylesheet">
+<style>
+
+body {
+    max-width: 800px;
+    margin:0px auto;
+    font-family: 'Open Sans', sans-serif;
+}
+
+#info {
+    height:25px;
+    width:100%;
+    font-size:16px;
+}
+
+#label {
+    font-weight:bold;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: rgb(102,102,102);
+  shape-rendering: crispEdges;
+}
+
+.domain {
+    display:none;
+}
+
+.axis text, #xaxislabel {
+  font: 10px sans-serif;
+  fill: rgb(102,102,102);
+  font-size:11px;
+}
+
+.cells path {
+  fill: none;
+  pointer-events: all;
+}
+
+.cells :hover circle {
+  opacity:0.75;
+  stroke-width: 2px;
+  stroke: #D2376D;
+}
+
+#source{
+    font-size: 14px;
+    font-weight: 700;
+    color: #414042;
+}
+
+</style>
+</head>
+
+<body>
+    <div>
+    	<h1>Beeswarm experiment</h1>
+	<p>
+	   This page is based on <a href="https://github.com/ONSvisual/beeswarm">Henry Lau's beeswarms</a>.
+	</p>
+	<p>
+	   The data is more-or-less random, and all three plots are accurate beeswarms displaying the same data.
+	   The first plot uses <a href="https://github.com/Kcnarf/d3-beeswarm">d3-beeswarm</a>.  The second
+	   plot uses a new method.  This begins by placing as many points as possible with a y-coordinate of
+	   zero.  Then, it finds a point that can be added as close as possible to the y=0 line without
+	   overlapping any other point and adds it (breaking ties by preferring points with low x values).
+	   This process is continued until all the points have been placed.  The x values are not modified.
+	</p>
+	<p>
+	  The third plot uses the new method with random tie-breaking.  This seems to pack the dots together
+	  quite neatly while avoiding the honeycomb effect of the middle plot.
+	</p>
+	<p>
+	   Reload the page to load new random data with more or fewer points.
+	</p>
+    </div>
+    <div id="info">
+    </div>
+    <div>
+        <svg id="svg1" width="100%"></svg>
+    </div>
+    <div>
+        <svg id="svg2" width="100%"></svg>
+    </div>
+    <div>
+        <svg id="svg3" width="100%"></svg>
+    </div>
+    <div id="source"></div>
+
+
+    <script src="https://cdn.ons.gov.uk/vendor/d3/4.2.7/d3.min.js"></script>
+    <script src="https://cdn.ons.gov.uk/vendor/pym/1.3.2/pym.min.js"></script>
+    <script src="lib/d3-beeswarm.min.js"></script>
+    <script src="lib/modernizr.svg.min.js"></script>
+
+    <script src="accurate-beeswarm-plot.js"></script>
+
+    <script>
+
+    var pymChild = null;
+
+    function drawGraphic(svgSelector, versionNumber) {
+
+        var svg = d3.select(svgSelector),
+            margin = {top: 10, right: 40, bottom: 40, left: 10};
+
+        svg.selectAll("*").remove()
+        d3.select("#legend").selectAll("*").remove()
+
+
+        svg.attr("height",dvc.essential.svgheight)
+
+            svgwidth =  parseInt(svg.style("width"));
+
+            width = svgwidth - margin.left - margin.right,
+            height = svg.attr("height") - margin.top - margin.bottom;
+
+        var formatValue = d3.format(",d");
+
+        var x = d3.scaleLinear()
+            .rangeRound([0, width]);
+
+        var g = svg.append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        if(dvc.essential.xAxisScale == "auto") {
+          x.domain(d3.extent(graphic_data, function(d) { return d.value; }));
+        } else {
+          x.domain(dvc.essential.xAxisScale);
+        }
+
+        var beeswarm;
+        var radius = Math.min(6, 1.5 + 2000 / graphic_data.length);
+        if (versionNumber == 1) {
+            beeswarm = new AccurateBeeswarm(graphic_data, radius,
+                    d => x(d.value), false).calculateYPositions();
+        } else if (versionNumber == 2) {
+            beeswarm = new AccurateBeeswarm(graphic_data, radius,
+                    d => x(d.value), true).calculateYPositions();
+        } else {
+            beeswarm = d3.beeswarm()
+                .data(graphic_data)
+                    .radius(radius)
+                .distributeOn(function(d) { return x(d.value);})
+                .arrange();
+        }
+
+        if(svgwidth < dvc.optional.mobileBreakpoint) {
+            numberticks = dvc.optional.x_num_ticks_sm_md[0];
+        } else {
+            numberticks = dvc.optional.x_num_ticks_sm_md[1];
+        }
+
+        g.append("g")
+            .attr("class", "axis axis--x")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x).ticks(numberticks, ".0s"));
+
+        var cell = g.append("g")
+            .attr("class", "cells")
+          .selectAll("g").data(d3.voronoi()
+              .extent([[-margin.left,-height/2], [width + margin.right, height/2]])
+              .x(function(d) { return d.x; })
+              .y(function(d) { return d.y; })
+            .polygons(beeswarm)).enter().append("g");
+
+        cell.append("circle")
+            .attr("r", radius * .9 - .1) 
+            .attr("cx", function(d) { return d.data.x; })
+            .attr("cy", function(d) { return d.data.y+height/2; })
+            .attr("fill",dvc.essential.colour_palette);
+
+        cell.append("path")
+            .attr("d", function(d) { return "M" + d.join("L") + "Z"; })
+        .attr("transform", "translate(0,"+height/2+")")
+            .on("mouseover", function(d) {
+                d3.select("#info").html("<span id='label'>" + d.data.datum.unique + ":</span> " + formatValue(d.data.datum.value));
+            });
+
+        //add xaxislabel
+          svg.append("g")
+              .attr("transform", "translate(" + (svgwidth - margin.right + margin.left) +"," + (height+margin.top + margin.bottom) + ")")
+            .append("text")
+            .attr("id","xaxislabel")
+            .attr("text-anchor", "end")
+            .text(dvc.essential.xAxisLabel);
+
+        //add source
+          d3.select("#source").text("Source: " + dvc.essential.sourceText);
+
+        if (pymChild) {
+            pymChild.sendHeight();
+        }
+
+    }
+
+
+    if (Modernizr.svg) {
+        //load config
+        d3.json("config.json", function(error, config) {
+        dvc=config
+
+            //load chart data
+            d3.csv(dvc.essential.graphic_data_url, function(error, data) {
+          data.forEach(function(d){
+            d.value=+d.value;
+          })
+          //graphic_data = data;
+
+          graphic_data = [];
+          // Add some random data
+          for (let i=0, top=10+Math.random()*4000; i<top; i++) {
+              let x = {...data[i % 200]};
+              x.value = x.value * .9 + Math.random() * 10;
+              graphic_data.push(x);
+          }
+
+                //use pym to create iframed chart dependent on specified variables
+                pymChild = new pym.Child({ renderCallback: drawGraphic("#svg1", 0)});
+                pymChild = new pym.Child({ renderCallback: drawGraphic("#svg2", 1)});
+                pymChild = new pym.Child({ renderCallback: drawGraphic("#svg3", 2)});
+            });
+        })
+    } else {
+         //use pym to create iframe containing fallback image (which is set as default)
+        pymChild = new pym.Child();
+        if (pymChild) {
+            pymChild.sendHeight();
+        }
+    }
+
+
+
+
+
+
+
+    function type(d) {
+      if (!d.value) return;
+      d.value = +d.value;
+      return d;
+    }
+
+    </script>
+</body>
+</html>
