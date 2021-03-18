@@ -81,6 +81,7 @@ body {
 	<p>
 	   Reload the page to load new random data with more or fewer points.
 	</p>
+	<p><a href="https://github.com/jtrim-ons/accurate-beeswarm-plot">View source on GitHub</a>
     </div>
     <div id="info">
     </div>
@@ -140,11 +141,11 @@ body {
         var beeswarm;
         var radius = Math.min(6, 1.5 + 2000 / graphic_data.length);
         if (versionNumber == 1) {
-            beeswarm = new AccurateBeeswarm(graphic_data, radius,
-                    d => x(d.value), false).calculateYPositions();
+            beeswarm = new AccurateBeeswarm(graphic_data, radius, d => x(d.value), false)
+		.calculateYPositions();
         } else if (versionNumber == 2) {
-            beeswarm = new AccurateBeeswarm(graphic_data, radius,
-                    d => x(d.value), true).calculateYPositions();
+            beeswarm = new AccurateBeeswarm(graphic_data, radius, d => x(d.value), true)
+	    	.calculateYPositions();
         } else {
             beeswarm = d3.beeswarm()
                 .data(graphic_data)
