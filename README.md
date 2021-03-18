@@ -27,7 +27,7 @@ Random tie-break (reduces the honeycomb pattern that sometimes appears):
 
 ```
 let result = new AccurateBeeswarm(data, radius, fn)
-        .oneSided()
+        .withTiesBrokenRandomly()
         .calculateYPositions();
 ```
 
