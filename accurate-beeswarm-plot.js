@@ -9,57 +9,13 @@ class AccurateBeeswarm {
     }
 
     withTiesBrokenRandomly() {
-        this.tieBreakFn = this.sfc32(0x9E3779B9, 0x243F6A88, 0xB7E15162, 1);
+        this.tieBreakFn = this._sfc32(0x9E3779B9, 0x243F6A88, 0xB7E15162, 1);
         return this;
     }
 
     oneSided() {
         this._oneSided = true;
         return this;
-    }
-
-    // Random number generator
-    // https://stackoverflow.com/a/47593316
-    sfc32(a, b, c, d) {
-        let rng = function() {
-            a >>>= 0; b >>>= 0; c >>>= 0; d >>>= 0;
-            var t = (a + b) | 0;
-            a = b ^ b >>> 9;
-            b = c + (c << 3) | 0;
-            c = (c << 21 | c >>> 11);
-            d = d + 1 | 0;
-            t = t + d | 0;
-            c = c + t | 0;
-            return (t >>> 0) / 4294967296;
-        }
-        for (let i=0; i<10; i++) {
-            rng();
-        }
-        return rng;
-    }
-
-    updateYBounds(item, all, pq) {
-        for (let step of [-1, 1]) {
-            for (let i = item.index + step;
-                    i >= 0 && i < all.length && Math.abs(item.x - all[i].x) < this.diameter;
-                    i += step) {
-                let other = all[i];
-                if (other.placed) continue;
-                let xDiff = item.x - other.x;
-                let yDiff = Math.sqrt(this.diameterSq - xDiff * xDiff);
-                other.minPositiveY = Math.max(other.minPositiveY, item.y + yDiff);
-                other.score = other.minPositiveY;
-                other.bestPosition = other.minPositiveY;
-                if (!this._oneSided) {
-                    other.maxNegativeY = Math.min(other.maxNegativeY, item.y - yDiff);
-                    if (-other.maxNegativeY < other.score) {
-                        other.score = -other.maxNegativeY;
-                        other.bestPosition = other.maxNegativeY;
-                    }
-                }
-                pq.reprioritise(other);
-            }
-        }
     }
 
     calculateYPositions() {
@@ -87,9 +43,53 @@ class AccurateBeeswarm {
             let item = pq.pop();
             item.placed = true;
             item.y = item.bestPosition;
-            this.updateYBounds(item, all, pq);
+            this._updateYBounds(item, all, pq);
         }
         return all.map(d => ({datum: d.datum, x: d.x, y: d.y}));
+    }
+
+    // Random number generator
+    // https://stackoverflow.com/a/47593316
+    _sfc32(a, b, c, d) {
+        let rng = function() {
+            a >>>= 0; b >>>= 0; c >>>= 0; d >>>= 0;
+            var t = (a + b) | 0;
+            a = b ^ b >>> 9;
+            b = c + (c << 3) | 0;
+            c = (c << 21 | c >>> 11);
+            d = d + 1 | 0;
+            t = t + d | 0;
+            c = c + t | 0;
+            return (t >>> 0) / 4294967296;
+        }
+        for (let i=0; i<10; i++) {
+            rng();
+        }
+        return rng;
+    }
+
+    _updateYBounds(item, all, pq) {
+        for (let step of [-1, 1]) {
+            for (let i = item.index + step;
+                    i >= 0 && i < all.length && Math.abs(item.x - all[i].x) < this.diameter;
+                    i += step) {
+                let other = all[i];
+                if (other.placed) continue;
+                let xDiff = item.x - other.x;
+                let yDiff = Math.sqrt(this.diameterSq - xDiff * xDiff);
+                other.minPositiveY = Math.max(other.minPositiveY, item.y + yDiff);
+                other.score = other.minPositiveY;
+                other.bestPosition = other.minPositiveY;
+                if (!this._oneSided) {
+                    other.maxNegativeY = Math.min(other.maxNegativeY, item.y - yDiff);
+                    if (-other.maxNegativeY < other.score) {
+                        other.score = -other.maxNegativeY;
+                        other.bestPosition = other.maxNegativeY;
+                    }
+                }
+                pq.reprioritise(other);
+            }
+        }
     }
 }
 
