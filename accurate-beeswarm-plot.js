@@ -33,11 +33,7 @@ class AccurateBeeswarm {
         }));
     let tieBreakFn = this.tieBreakFn;
     all.forEach(function(d) {d.tieBreaker = tieBreakFn(d.x)});
-        let pq = new AccurateBeeswarmPriorityQueue(function(a, b) {
-            if (a.score < b.score) return true;
-            if (a.score > b.score) return false;
-            return a.tieBreaker < b.tieBreaker;
-        });
+        let pq = new AccurateBeeswarmPriorityQueue();
         pq.push(...all);
         while (!pq.isEmpty()) {
             let item = pq.pop();
@@ -100,9 +96,8 @@ class AccurateBeeswarmPriorityQueue {
     left = i => (i << 1) + 1;
     right = i => (i + 1) << 1;
 
-    constructor(comparator = (a, b) => a > b) {
+    constructor() {
         this._heap = [];
-        this._comparator = comparator;
     }
     size() {
         return this._heap.length;
@@ -136,7 +131,11 @@ class AccurateBeeswarmPriorityQueue {
         this._siftDown(item.heapPos);
     }
     _greater(i, j) {
-        return this._comparator(this._heap[i], this._heap[j]);
+        let a = this._heap[i];
+        let b = this._heap[j];
+        if (a.score < b.score) return true;
+        if (a.score > b.score) return false;
+        return a.tieBreaker < b.tieBreaker;
     }
     _swap(i, j) {
         [this._heap[i], this._heap[j]] = [this._heap[j], this._heap[i]];
