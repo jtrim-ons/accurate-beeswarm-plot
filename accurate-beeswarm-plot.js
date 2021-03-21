@@ -31,8 +31,8 @@ class AccurateBeeswarm {
             bestPosition: 0,
             heapPos: -1
         }));
-    let tieBreakFn = this.tieBreakFn;
-    all.forEach(function(d) {d.tieBreaker = tieBreakFn(d.x)});
+        let tieBreakFn = this.tieBreakFn;
+        all.forEach(function(d) {d.tieBreaker = tieBreakFn(d.x)});
         let pq = new AccurateBeeswarmPriorityQueue();
         pq.push(...all);
         while (!pq.isEmpty()) {
