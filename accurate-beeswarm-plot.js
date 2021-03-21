@@ -66,24 +66,30 @@ class AccurateBeeswarm {
 
     _updateYBounds(item, all, pq) {
         for (let step of [-1, 1]) {
+            let xDist;
             for (let i = item.index + step;
-                    i >= 0 && i < all.length && Math.abs(item.x - all[i].x) < this.diameter;
+                    i >= 0 && i < all.length && (xDist = Math.abs(item.x - all[i].x)) < this.diameter;
                     i += step) {
                 let other = all[i];
                 if (other.placed) continue;
-                let xDiff = item.x - other.x;
-                let yDiff = Math.sqrt(this.diameterSq - xDiff * xDiff);
-                other.minPositiveY = Math.max(other.minPositiveY, item.y + yDiff);
+                let yDist = Math.sqrt(this.diameterSq - xDist * xDist);
+                other.minPositiveY = Math.max(other.minPositiveY, item.y + yDist);
+                let prevScore = other.score;
                 other.score = other.minPositiveY;
                 other.bestPosition = other.minPositiveY;
                 if (!this._oneSided) {
-                    other.maxNegativeY = Math.min(other.maxNegativeY, item.y - yDiff);
+                    other.maxNegativeY = Math.min(other.maxNegativeY, item.y - yDist);
                     if (-other.maxNegativeY < other.score) {
                         other.score = -other.maxNegativeY;
                         other.bestPosition = other.maxNegativeY;
                     }
                 }
-                pq.reprioritise(other);
+                if (other.score > prevScore) {
+                    // It is never the case that other.score < prevScore here.
+                    // The if statement is unnecessary, but makes the algorithm
+                    // run a little faster.
+                    pq.deprioritise(other);
+                }
             }
         }
     }
@@ -128,7 +134,7 @@ class AccurateBeeswarmPriorityQueue {
         return poppedValue;
     }
     // Caution: this only works if new priority is less than or equal to old one.
-    reprioritise(item) {
+    deprioritise(item) {
         this._siftDown(item.heapPos);
     }
     _greater(i, j) {
