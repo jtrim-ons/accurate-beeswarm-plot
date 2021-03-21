@@ -138,7 +138,9 @@ class AccurateBeeswarmPriorityQueue {
         return a.tieBreaker < b.tieBreaker;
     }
     _swap(i, j) {
-        [this._heap[i], this._heap[j]] = [this._heap[j], this._heap[i]];
+        let tmp = this._heap[i];
+        this._heap[i] = this._heap[j];
+        this._heap[j] = tmp;
         this._heap[i].heapPos = i;
         this._heap[j].heapPos = j;
     }
