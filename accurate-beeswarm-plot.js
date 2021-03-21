@@ -150,11 +150,12 @@ class AccurateBeeswarmPriorityQueue {
         }
     }
     _siftDown(node = this.TOP) {
-        while (
-            (this.left(node) < this.size() && this._greater(this.left(node), node)) ||
-            (this.right(node) < this.size() && this._greater(this.right(node), node))
+        let l, r, sz;
+        while (l = this.left(node), r = this.right(node), sz = this.size(),
+            (l < sz && this._greater(l, node)) ||
+            (r < sz && this._greater(r, node))
         ) {
-            let maxChild = (this.right(node) < this.size() && this._greater(this.right(node), this.left(node))) ? this.right(node) : this.left(node);
+            let maxChild = (r < sz && this._greater(r, l)) ? r : l;
             this._swap(node, maxChild);
             node = maxChild;
         }
