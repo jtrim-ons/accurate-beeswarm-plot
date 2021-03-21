@@ -140,6 +140,7 @@ body {
 
         var beeswarm;
         var radius = Math.min(6, 1.5 + 2000 / graphic_data.length);
+        console.time('beeswarm');
         if (versionNumber == 1) {
             beeswarm = new AccurateBeeswarm(graphic_data, radius, d => x(d.value))
                 .calculateYPositions();
@@ -154,6 +155,7 @@ body {
                 .distributeOn(function(d) { return x(d.value);})
                 .arrange();
         }
+        console.timeEnd('beeswarm');
 
         if(svgwidth < dvc.optional.mobileBreakpoint) {
             numberticks = dvc.optional.x_num_ticks_sm_md[0];
