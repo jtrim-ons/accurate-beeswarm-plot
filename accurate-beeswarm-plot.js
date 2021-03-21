@@ -92,9 +92,10 @@ class AccurateBeeswarm {
 class AccurateBeeswarmPriorityQueue {
     // Based on https://stackoverflow.com/a/42919752
     TOP = 0;
-    parent = i => ((i + 1) >>> 1) - 1;
-    left = i => (i << 1) + 1;
-    right = i => (i + 1) << 1;
+
+    parent(i) {return ((i + 1) >>> 1) - 1;}
+    left(i) {return (i << 1) + 1;}
+    right(i) {return (i + 1) << 1;}
 
     constructor() {
         this._heap = [];
@@ -152,8 +153,9 @@ class AccurateBeeswarmPriorityQueue {
         }
     }
     _siftDown(node = this.TOP) {
-        let l, r, sz;
-        while (l = this.left(node), r = this.right(node), sz = this.size(),
+        let l, r
+        let sz = this.size();
+        while (l = this.left(node), r = this.right(node),
             (l < sz && this._greater(l, node)) ||
             (r < sz && this._greater(r, node))
         ) {
