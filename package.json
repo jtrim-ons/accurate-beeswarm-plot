@@ -1,0 +1,29 @@
+{
+  "name": "accurate-beeswarm-plot",
+  "version": "1.0.0",
+  "description": "A fast layout algorithm for beeswarm plots",
+  "main": "accurate-beeswarm-plot.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jtrim-ons/accurate-beeswarm-plot.git"
+  },
+  "keywords": [
+    "beeswarm",
+    "plot",
+    "chart",
+    "layout",
+    "arrangement"
+  ],
+  "author": "James Trimble",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jtrim-ons/accurate-beeswarm-plot/issues"
+  },
+  "homepage": "https://github.com/jtrim-ons/accurate-beeswarm-plot#readme"
+}
