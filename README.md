@@ -20,11 +20,16 @@ The module does not plot the points; you can use any plotting library to do this
 
 ## How to use `AccurateBeeswarm`
 
-First, import the module:
+First, `npm install accurate-beeswarm-plot` and import the module:
 
 ```javascript
 import { AccurateBeeswarm } from 'accurate-beeswarm-plot';
 ```
+
+The [latest release](https://github.com/jtrim-ons/accurate-beeswarm-plot/releases/latest)
+has a non-module version of the script
+`accurate-beeswarm-plot.nomodule.js` that does not require the `import`
+statement.
 
 It is assumed that the data (x) axis of the plot will be horizontal.  For
 a vertical beeswarm, simply swap x and y axes when plotting.
