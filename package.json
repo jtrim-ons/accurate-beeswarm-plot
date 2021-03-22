@@ -1,12 +1,13 @@
 {
   "name": "accurate-beeswarm-plot",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A fast layout algorithm for beeswarm plots",
-  "main": "accurate-beeswarm-plot.js",
+  "main": "dist/accurate-beeswarm-plot.js",
   "directories": {
     "doc": "docs"
   },
   "scripts": {
+    "build": "rm -rf dist && mkdir dist && cp src/accurate-beeswarm-plot.js dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
