@@ -170,3 +170,5 @@ class AccurateBeeswarmPriorityQueue {
         }
     }
 }
+
+export { AccurateBeeswarm };
