@@ -118,6 +118,6 @@ And of course, you could just use a histogram!
 
 ## Issues
 
-[Issues](https://layercake.graphics/example/Beeswarm)
+[Issues](https://github.com/jtrim-ons/accurate-beeswarm-plot/issues)
 and [discussions](https://github.com/jtrim-ons/accurate-beeswarm-plot/discussions)
 are on GitHub.
