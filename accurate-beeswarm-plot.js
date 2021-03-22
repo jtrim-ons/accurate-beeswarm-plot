@@ -97,13 +97,12 @@ class AccurateBeeswarm {
 
 class AccurateBeeswarmPriorityQueue {
     // Based on https://stackoverflow.com/a/42919752
-    TOP = 0;
-
     parent(i) {return ((i + 1) >>> 1) - 1;}
     left(i) {return (i << 1) + 1;}
     right(i) {return (i + 1) << 1;}
 
     constructor() {
+        this.TOP = 0;
         this._heap = [];
     }
     size() {
