@@ -81,6 +81,17 @@ let result = new AccurateBeeswarm(data, radius, fn)
 
 ![A beeswarm plot using random tie-breaking](img/accurate-beeswarm-random.png)
 
+## What does the algorithm do?
+
+The algorithm places data points one by one.  At each step, a point that can be
+placed as close to the y=0 line as possible is chosen and placed.  By default,
+ties are broken by choosing points with low x values; if `withTiesBrokenRandomly()`
+is used, ties are broken using a random tie breaker which is given to each point
+before running the algorithm.
+
+The algorithm uses a priority queue to quickly select the next point to be placed
+at each step.
+
 ## Tips
 
 If you have more than about 1000 data points, it's helpful to run the algorithm
