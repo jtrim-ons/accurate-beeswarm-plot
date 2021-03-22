@@ -1,6 +1,6 @@
 class AccurateBeeswarm {
     constructor(items, radius, xFun) {
-        this.items = [...items].sort((a,b) => xFun(a) - xFun(b));
+        this.items = items;
         this.diameter = radius * 2;
         this.diameterSq = this.diameter * this.diameter;
         this.xFun = xFun;
@@ -21,7 +21,7 @@ class AccurateBeeswarm {
     calculateYPositions() {
         let all = this.items.map((d,i) => ({
             datum: d,
-            index: i,
+            originalIndex: i,
             x: this.xFun(d),
             y: null,
             placed: false,
@@ -30,7 +30,8 @@ class AccurateBeeswarm {
             score: 0,
             bestPosition: 0,
             heapPos: -1
-        }));
+        })).sort((a,b) => a.x - b.x);
+        all.forEach(function (d, i) {d.index = i;});
         let tieBreakFn = this.tieBreakFn;
         all.forEach(function(d) {d.tieBreaker = tieBreakFn(d.x)});
         let pq = new AccurateBeeswarmPriorityQueue();
@@ -41,6 +42,7 @@ class AccurateBeeswarm {
             item.y = item.bestPosition;
             this._updateYBounds(item, all, pq);
         }
+        all.sort((a, b) => a.originalIndex - b.originalIndex);
         return all.map(d => ({datum: d.datum, x: d.x, y: d.y}));
     }
 
