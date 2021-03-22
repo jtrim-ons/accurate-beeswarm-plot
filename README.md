@@ -81,6 +81,11 @@ let result = new AccurateBeeswarm(data, radius, fn)
 
 ![A beeswarm plot using random tie-breaking](img/accurate-beeswarm-random.png)
 
+## An example using Layer Cake
+
+You can view an example using the Layer Cake framework
+[on the Svelte REPL](https://svelte.dev/repl/115fa52a16d34cd8992c829119266df0?version=3.35.0).
+
 ## What does the algorithm do?
 
 The algorithm places data points one by one.  At each step, a point that can be
@@ -110,3 +115,9 @@ Beeswarms can also be produced using force layout, for example using
 ![A beeswarm plot using force layout](img/force-layout.png)
 
 And of course, you could just use a histogram!
+
+## Issues
+
+[Issues](https://layercake.graphics/example/Beeswarm)
+and [discussions](https://github.com/jtrim-ons/accurate-beeswarm-plot/discussions)
+are on GitHub.
