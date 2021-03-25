@@ -115,7 +115,10 @@ with similar goals.  The figure below uses d3-beeswarm to calculate the layout.
 ![A beeswarm plot using d3-beeswarm](img/d3-beeswarm.png)
 
 Beeswarms can also be produced using force layout, for example using
-[d3-force](https://github.com/d3/d3-force), as in the example below.  A disadvantage of this approach is that it tends to represent values imprecisely.  In the figure below, orange points have x-values that are incorrect by at least 0.5.
+[d3-force](https://github.com/d3/d3-force), as in the example below and
+[this Layer Cake example](https://layercake.graphics/example/BeeswarmForce).
+A disadvantage of this approach is that it tends to represent values imprecisely.
+In the figure below, orange points have x-values that are incorrect by at least 0.5.
 
 ![A beeswarm plot using force layout](img/force-layout.png)
 
