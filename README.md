@@ -111,6 +111,8 @@ on the server side to avoid a long-running computation in the browser.
 
 [d3-beeswarm](https://github.com/Kcnarf/d3-beeswarm) is another library
 with similar goals.  The figure below uses d3-beeswarm to calculate the layout.
+To the best of my understanding, d3-beeswarm places the points in the order given,
+rather than using a dynamic strategy at each step to choose which point to place.
 
 ![A beeswarm plot using d3-beeswarm](img/d3-beeswarm.png)
 
@@ -121,6 +123,9 @@ A disadvantage of this approach is that it tends to represent values imprecisely
 In the figure below, orange points have x-values that are incorrect by at least 0.5.
 
 ![A beeswarm plot using force layout](img/force-layout.png)
+
+The [beeswarm](https://github.com/aroneklund/beeswarm) package for R implements
+a number of beeswarm strategies.
 
 And of course, you could just use a histogram!
 
